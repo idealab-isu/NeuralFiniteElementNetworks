@@ -1,0 +1,869 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Finite Element Inspired Neural PDE Solvers &#8212; Neural Finite Element Networks</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=384b581d" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=87e54e7c" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=3ee479438cf8b5e0d341" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=3ee479438cf8b5e0d341" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=3ee479438cf8b5e0d341"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'content/main';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Introduction" href="../intro.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="#">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Neural Finite Element Networks</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1 current active">
+                <a class="reference internal" href="#">
+                    Finite Element Inspired Neural PDE Solvers
+                </a>
+            </li>
+        </ul>
+        <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown.html">Markdown Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown-notebooks.html">Notebooks with MyST Markdown</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks.html">Content with notebooks</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/ethanherron/ethanherron.github.io" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/ethanherron/ethanherron.github.io/issues/new?title=Issue%20on%20page%20%2Fcontent/main.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/content/main.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Finite Element Inspired Neural PDE Solvers</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Finite Element Inspired Neural PDE Solvers</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-driven-approach">Data-Driven Approach</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-free-approach">Data-Free Approach</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#neural-finite-element-networks">Neural Finite Element Networks</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Neural Finite Element Networks</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#material-properties">Material Properties</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#immersed-object">Immersed Object</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusion">Conclusion</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#finite-element-methods">Finite Element Methods</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#discretization-elements-and-basis-functions">Discretization: Elements and Basis Functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-fem-to-compute-spatial-derivatives-of-field-solutions">Using FEM to Compute Spatial Derivatives of Field Solutions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
+</ul>
+</li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="finite-element-inspired-neural-pde-solvers">
+<h1>Finite Element Inspired Neural PDE Solvers<a class="headerlink" href="#finite-element-inspired-neural-pde-solvers" title="Link to this heading">#</a></h1>
+<p>Neural PDEs are a termed used to describe machine learning models which
+model Partial Differential Equations. Within Neural PDEs there are two
+different approaches; data-driven, and data-free. Data-driven approaches
+are similar to traditional machine learning tasks, using massive amounts
+of data to train highly parameterized regression models. Data-free
+approaches, such as Physics-Informed Neural Networks or Neural Finite
+Element Networks (NFENs), the work outlined in this post, do not require
+any ground truth data. These models are optimized to minimize an
+objective function formulated by the target Partial Differential
+Equation (PDE).</p>
+<p>Let’s use the Poisson Equation as an example.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+    - \mathbf{{\nabla}}\cdot [\nu(\mathbf{x}; q) \mathbf{{\nabla}}u(\mathbf{x}; q)] &amp;= f(\mathbf{x}) \ \ \text{in} \ \ \Omega, \\
+    \alpha u + {\beta} (\nabla u\cdot \hat{\mathbf{x}{n}}) &amp;= g(\mathbf{x}) \ \ \text{on}\ \ \Gamma_o,
+\end{align}\end{split}\]</div>
+<p>Where <span class="math notranslate nohighlight">\(u(x)\)</span> is a scalar function indicative of the mass density,
+electric potential, temperature, or surface indicator function,
+depending on your application of the Poisson Equation. <span class="math notranslate nohighlight">\(\nu\)</span> is the
+diffusivity coefficient, and functions <span class="math notranslate nohighlight">\(f(\mathbf{x})\)</span> and
+<span class="math notranslate nohighlight">\(g(\mathbf{x})\)</span> are forcing functions. Lastly, different boundary
+conditions (Dirichlet, Neumann, Robin) are produced by varying
+<span class="math notranslate nohighlight">\({\alpha}\)</span> and <span class="math notranslate nohighlight">\({\beta}\)</span>, e.g., <span class="math notranslate nohighlight">\((\alpha, \beta) = (1,0)\)</span> denotes
+Dirichlet boundary condition, whereas <span class="math notranslate nohighlight">\((\alpha, \beta) = (0,1)\)</span>
+represents Neumann condition.</p>
+<section id="data-driven-approach">
+<h2>Data-Driven Approach<a class="headerlink" href="#data-driven-approach" title="Link to this heading">#</a></h2>
+<p>In the data-driven approach to modeling the Poisson Equation one would
+need a dataset of field solutions for the Poisson Equation. Variability
+in the dataset could be from a range of diffusivity values, different
+boundaries conditions, etc. The machine learning model would be trained
+to regress the final field solution given certain input values such as
+diffusivity values or boundary conditions. The loss function in this
+scenario is most likely a simple reconstruction loss using the
+mean-squared-error between the predicted field solution and the ground
+truth field solution from the dataset.</p>
+</section>
+<section id="data-free-approach">
+<h2>Data-Free Approach<a class="headerlink" href="#data-free-approach" title="Link to this heading">#</a></h2>
+<p>In the data-free approach to modeling the Poisson Equation there is no
+need for a dataset of ground truth values since we are constructing our
+loss function from the Poisson Equation itself. Constructing the
+data-free loss function for the Poisson Equation is very straight
+forward. Our neural network will make predictions of the field solution,
+so it will be a parameterized approximation of <span class="math notranslate nohighlight">\(u(\mathbf{x})\)</span>.
+Concretely, we replace <span class="math notranslate nohighlight">\(u(\mathbf{x})\)</span> in the Poisson Equation with
+<span class="math notranslate nohighlight">\(u_{\theta}(\mathbf{x})\)</span> where <span class="math notranslate nohighlight">\(u_{\theta}(\mathbf{x})\)</span> is the predicted
+field solution from the neural network parameterized by <span class="math notranslate nohighlight">\(\theta\)</span>. Since
+we have replaced <span class="math notranslate nohighlight">\(u(\mathbf{x})\)</span> with <span class="math notranslate nohighlight">\(u_{\theta}(\mathbf{x})\)</span>, to
+satisfy the Poisson Equation and structure our loss function we need to
+find the spatial derivatives of <span class="math notranslate nohighlight">\(u_{\theta}(\mathbf{x})\)</span>. Once we are
+able to compute the Laplacian of our predicted field solution
+<span class="math notranslate nohighlight">\(u_{\theta}(\mathbf{x})\)</span>, we can optimize the parameters of the neural
+network such that its output field solution satisfies the given forcing
+function <span class="math notranslate nohighlight">\(f(\mathbf{x})\)</span>.</p>
+<p>So, by substituting our neural network, <span class="math notranslate nohighlight">\(u_{\theta}(\mathbf{x})\)</span>, into
+the Poisson equation for our scalar function <span class="math notranslate nohighlight">\(u(x)\)</span> we get the
+following.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+    - \mathbf{{\nabla}}\cdot [\nu(\mathbf{x}; q) \mathbf{{\nabla}}u_{\theta}(\mathbf{x}; q)] &amp;= f(\mathbf{x}) \ \ \text{in} \ \ \Omega, \\
+    \alpha u_{\theta} + {\beta} (\nabla u_{\theta}\cdot \hat{\mathbf{x}{n}}) &amp;= g(x) \ \ \text{on}\ \ \Gamma_o,
+    \end{align}\end{split}\]</div>
+<p>The loss function for a data-free neural PDE Solver is given as follows.</p>
+<div class="math notranslate nohighlight">
+\[\mathcal{L} = \int_{\Omega} \nu(\mathbf{x}; q)|\mathbf{{\nabla}}u_{\theta}(\mathbf{x}; q)|^2 d\mathbf{x}\]</div>
+<p>Both methods have their trade-offs. The Data-Driven approaches have
+demonstrated better performance than their Data-Free counterparts at the
+expense of its data requirements. Data-Free methods are more aligned
+with the underlying PDE, but can be challenging to train and are often
+incapable of generalizing to unseen circumstances of the PDE it was
+optimized for.</p>
+</section>
+<section id="neural-finite-element-networks">
+<h2>Neural Finite Element Networks<a class="headerlink" href="#neural-finite-element-networks" title="Link to this heading">#</a></h2>
+<p>The focus of this post is Neural Finite Element Networks, which fall
+under the data-free regime. In data-free methods the loss function is
+formulated directly from the target PDE, requiring the computation of
+spatial gradients to formulate the target PDE. Computing these spatial
+gradients is not trivial, and is the major contribution of Neural Finite
+Element Networks. Previous methods leveraged the Automatic
+Differentiation framework used to optimize the parameters of the neural
+network to compute the spatial gradients. In Neural Finite Element
+Networks these spatial derivatives are computed via Finite Element
+Method (FEM). Computing spatial derivatives with FEM allows NFENs to
+directly predict a discretization of the entire field solution. If the
+discretization of the domain is a uniform grid, like an image, these
+methods are able to use any image-based neural network architecture,
+e.g., convolutional neural networks and vision transformers. In the
+following section we present NFENs through two different problem
+formulations our works have addressed, specifically, solving the Poisson
+equation over a distribution of material diffusivity coefficient fields,
+and solving the Poisson equation over a distribution of irregular
+geometries inside of the domain. We have also included a brief overview
+of FEM in an appendix section at the end of this post.</p>
+<figure class="align-default" id="fig-ibn-framework">
+<img alt="../_images/ibn_framework_u_theta.png" src="../_images/ibn_framework_u_theta.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 1 </span><span class="caption-text">Outline of an NFEN framework which maps an irregular geometry to the field solution of the given PDE, in this example the Poisson equation, to its field solution over the irregular geometry.</span><a class="headerlink" href="#fig-ibn-framework" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="id1">
+<h1>Neural Finite Element Networks<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
+<p>NFEN is a machine learning framework that learns a mapping between some
+input, a coefficient field, an object boundary, etc. to the field
+solution of the target PDE. <a class="reference internal" href="#fig-ibn-framework"><span class="std std-numref">Fig. 1</span></a> provides an overview of the
+NFEN framework predicting field solutions to the Poisson equation over
+an object boundary. The loss term for NFENs is the residual of the
+target PDE, where each term in the PDE is computed via FEMs. Since the
+entire loss term is computed from the output of the NFEN this type of
+model falls under the data-free regime of Neural PDE Solvers, and as our
+results will show, even Neural PDE <em>Operators</em>, capable of solving the
+target PDE over variable inputs not contained in the training dataset,
+note this is a training dataset of <em>inputs</em>, not ground truth field
+solutions.</p>
+<p>In the following sections we cover two different applications of NFENs,
+where each application is a different form of input variability. The
+first section highlights our work in which covers variability in
+material diffusivity, where we show a heat or mass transfer problem
+through an inhomogenous media. The second section covers our work ,
+where we implement with NFEN framework with masks of complex geometries
+immersed in the domain. In each section we describe the loss function
+formulation, and present results in 2D and 3D for the given problem
+formulation.</p>
+<section id="material-properties">
+<h2>Material Properties<a class="headerlink" href="#material-properties" title="Link to this heading">#</a></h2>
+<figure class="align-default" id="fig-anec-2d-single-query">
+<img alt="../_images/anec-2d-single-query.png" src="../_images/anec-2d-single-query.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 2 </span><span class="caption-text">Left: contours of <span class="math notranslate nohighlight">\(ln(ν)\)</span>, the input diffusivity field; middle-left: NFEN prediction (<span class="math notranslate nohighlight">\(u_θ\)</span>); middle-right: reference numerical solution using FEM (<span class="math notranslate nohighlight">\(u^h\)</span>); right: contours of (<span class="math notranslate nohighlight">\(u_θ - u^h\)</span>).</span><a class="headerlink" href="#fig-anec-2d-single-query" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>For our first example problem we apply NFENs to the heat or mass
+transfer problem through an inhomogenous media. In this problem we
+created a dataset where each sample is a unique coefficient field
+defining the diffusivity. The NFEN learns a mapping between a
+<em>distribution</em> of diffusivity coefficient fields to the corresponding
+field solution of the Poisson equation. The dataset created
+contains <span class="math notranslate nohighlight">\(N\)</span> different diffusivity fields. This dataset does not contain
+any ground truth field solutions for the corresponding diffusivity
+field. The ground truth field solutions are not required to train the
+NFEN since the residual is computed via FEM. The loss function for this
+NFEN formulation is:</p>
+<div class="math notranslate nohighlight">
+\[\begin{aligned}
+\mathcal{L} = \frac{1}{N} \sum_{i = 1}^{N} \int_{\Omega} \nu_i(\mathbf{x})|\mathbf{{\nabla}}u_{\theta}(\mathbf{x}; q_i)|^2 d\mathbf{x},
+\end{aligned}\]</div>
+<p>where <span class="math notranslate nohighlight">\(q_i\)</span> is our variable input, in this case the diffusivity
+coefficients, for NFEN, i.e., <span class="math notranslate nohighlight">\(\nu_i\)</span>. In this problem both Dirichlet
+and Neumann boundary conditions are present. The Dirichlet conditions
+are applied exactly. The zero-Neumann condition is also applied exactly
+at the continuous level since the boundary integrals vanish at the
+continuous level.</p>
+<p>The parameters of NFEN are optimized via gradient descent to minimize
+this residual across the distribution of diffusivity coefficient fields
+contained in the training dataset. In our works we use the Adam
+optimizer, but any stochastic gradient descent method can be used with
+minor performance differences.</p>
+<p>Once the NFEN is trained it can approximate field solutions to unseen
+diffusivity fields, given they are drawn from the same distribution used
+to create the training dataset. This generalization ability from NFEN
+classifies it as a data-free <strong>Neural Operator</strong>, something in the
+current landscape that has not been achieved.</p>
+<p>In <a class="reference internal" href="#fig-anec-2d-single-query"><span class="std std-numref">Fig. 2</span></a> and <a class="reference internal" href="#fig-anec-3d"><span class="std std-numref">Fig. 3</span></a>, we present results for NFEN in two and three dimensional domains.</p>
+<figure class="align-default" id="fig-anec-3d">
+<img alt="../_images/anec_3d.png" src="../_images/anec_3d.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 3 </span><span class="caption-text">Contours of <span class="math notranslate nohighlight">\(\ln(\nu(x,y,z))\)</span> and the solution <span class="math notranslate nohighlight">\(u_{\theta}(x,y,z)\)</span> to the 3D Poisson’s problem on a <span class="math notranslate nohighlight">\( 64\times 64\times 64 \)</span> mesh (for <span class="math notranslate nohighlight">\( \mathbf{a} = (-1,1.4,1.5,-1.3,-1.6,0.3) \)</span>).</span><a class="headerlink" href="#fig-anec-3d" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="immersed-object">
+<h2>Immersed Object<a class="headerlink" href="#immersed-object" title="Link to this heading">#</a></h2>
+<figure class="align-default" id="d-operator">
+<img alt="../_images/2d_operator.png" src="../_images/2d_operator.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 4 </span><span class="caption-text">Results for a <em>single</em> 2D NFEN which maps an unseen irregular geometry to the field solution of the Poisson equation. The first and fourth columns are the masks of the irregular geometry, the second and fifth columns are the predicted field solution, the third and sixth columns are the ground truth FEM field solution.</span><a class="headerlink" href="#d-operator" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>NFENs are very flexible and are even capable of learning field solutions
+of domains that contain irregular geometries such as <a class="reference internal" href="#d-operator"><span class="std std-numref">Fig. 4</span></a>. For this problem NFEN
+learns a mapping between a mask of the irregular geometry in the domain
+and the field solution which satisfies the given PDE over the domain
+with the irregular geometry.</p>
+<p>Lets continue with the same Poisson equation example, but with the added
+boundary conditions for the irregular object. We now have,</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+    - \mathbf{{\nabla}}\cdot [\nu(\mathbf{x}; q) \mathbf{{\nabla}}u_{\theta}(\mathbf{x}; q)] &amp;= f(\mathbf{x}) \ \ \text{in} \ \ \Omega, \\
+        u_{\theta}(\mathbf{x},q) &amp;= 0, \ \text{on}\ \Gamma_B, \\
+    \alpha u_{\theta} + {\beta} (\nabla u_{\theta}\cdot \hat{\mathbf{x}{n}}) &amp;= g(x) \ \ \text{on}\ \ \Gamma_o,
+    \end{align}\end{split}\]</div>
+<p>where, in this formulation, <span class="math notranslate nohighlight">\(q\)</span> denotes the mask of the irregular
+geometry. We also have the added boundary condition which states the
+field solution is <span class="math notranslate nohighlight">\(0\)</span> on the irregular geometry.</p>
+<p>When formulating the loss for this problem we need to pay special
+attention to how we compute the residual such that it respects the
+boundary conditions. In the Irregular Boundary Network work , we chose
+to strongly apply the Dirichlet boundary conditions over a discrete
+approximation of the irregular object. This discrete approximation of
+the irregular object is the binary mask of the irregular object itself,
+the input to the NFEN in this problem. Strongly applying the Dirichlet
+boundary conditions of the irregular object amounts to applying a
+threshold function over the predicted field solution by the Irregular
+Boundary Network. Once boundary conditions have been applied the field
+solution, with applied boundary conditions, is passed off to the
+FEM-based loss function to compute the residual as is done in the
+previous NFEN example.</p>
+<p>The training dataset for this problem is a distribution of irregular
+geometries, opposed to diffusivity fields in the previous problem. The
+distribution of these ’irregular geometries’ may vary wildly, as the
+binary images in <a class="reference internal" href="#d-operator"><span class="std std-numref">Fig. 4</span></a> show. The results shown
+in <a class="reference internal" href="#d-operator"><span class="std std-numref">Fig. 4</span></a> come from a similar
+distribution as the training dataset, but are all samples from the test
+dataset.</p>
+<p>The loss function for this problem is as follows,</p>
+<div class="math notranslate nohighlight">
+\[\begin{aligned}
+    \mathcal{L} = \frac{1}{N} \sum_{i = 1}^{N} \int_{\Omega} |\mathbf{{\nabla}}u_{\theta}(\mathbf{x}; q_i)|^2 d\mathbf{x},
+\end{aligned}\]</div>
+<p>where <span class="math notranslate nohighlight">\(N\)</span> is a mini-batch of irregular geometries from the training
+dataset and <span class="math notranslate nohighlight">\(q_i\)</span> is a single irregular geometry in the minibatch.</p>
+<p>As with the previous example problem the parameters of the NFEN are
+optimized with the Adam optimization algorithm and a standard UNet
+architecture. Once optimized the NFEN can reliably predict field
+solutions to irregular boundaries not contained in the training dataset.
+This second example supports the potential for neural networks to learn
+PDEs in a data-free regime without the need to be retrained for a new
+unseen input geometry.</p>
+<figure class="align-default" id="engine-humvee">
+<img alt="../_images/engine_humvee.png" src="../_images/engine_humvee.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 5 </span><span class="caption-text">Geometric model with the domain (left) and the field solution to Poisson’s equation using the NFEN framework (right) for the Engine and the Humvee models.</span><a class="headerlink" href="#engine-humvee" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="bunnies">
+<img alt="../_images/bunnies.png" src="../_images/bunnies.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 6 </span><span class="caption-text">Left: the “Stanford bunny” placed within the background domain; Right: a single-instance NFEN for the Poisson equation is solved on the bunny using NFEN. The forcing <span class="math notranslate nohighlight">\(f = 500\)</span>, and the boundary condition is given by <span class="math notranslate nohighlight">\(u = 0\)</span> on the surface of the bunny. This is an example where the solution is sought <em>inside</em> the object rather than outside.</span><a class="headerlink" href="#bunnies" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="conclusion">
+<h1>Conclusion<a class="headerlink" href="#conclusion" title="Link to this heading">#</a></h1>
+<p>Overall Neural Finite Element Networks provide a clean and simple
+framework to learn Neural PDE Solvers and potentially Operators without
+the need for any expensive ground truth field solutions.</p>
+<ul class="simple">
+<li><p>Provides a flexible framework for any PDE.</p></li>
+<li><p>Approximates a discretized field solution.</p></li>
+<li><p>Is agnostic to the network input, e.g., diffusivity coefficient
+fields or immersed irregular geometries.</p></li>
+<li><p>Can be used with any network architecture, Convolutional Neural
+Networks, Vision Transformers, and even Graph Neural Networks.</p></li>
+<li><p>Builds off of decades of work dedicated to numerical methods.</p></li>
+</ul>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="finite-element-methods">
+<h1>Finite Element Methods<a class="headerlink" href="#finite-element-methods" title="Link to this heading">#</a></h1>
+<p>Finite element methods (FEM) are a class of general numerical methods
+used to solve PDEs by discretizing the solution space into smaller
+components, called ’elements’. Each of these elements is representative
+of a smaller and much simpler equation than the PDE governing the given
+domain. One can solve this larger, more complex PDE by solving the
+system of smaller element-wise equations.</p>
+<figure class="align-default" id="gauss-points">
+<img alt="../_images/gauss_point.png" src="../_images/gauss_point.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 7 </span><span class="caption-text">Left: A single 2D element in FEM, with black dots denoting “nodes” and red dots denoting 2×2 Gauss quadrature points. Right: A finite element mesh, with 4×3 linear elements and 5×4 nodes. Each of these elements contains Gauss points for integration to be performed within that element. Within each element, the “first” quadrature point (marked “1” on left) is marked green, and others red.</span><a class="headerlink" href="#gauss-points" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="int-gauss">
+<img alt="../_images/integrationFEM.png" src="../_images/integrationFEM.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 8 </span><span class="caption-text">Quadrature quantity evaluation in FEM context. <span class="math notranslate nohighlight">\((U_θ^d)_M\)</span> is the matrix view of the nodal values. <span class="math notranslate nohighlight">\(K_{GP1}\)</span> is kernel containing the basis function values at “gauss point - 1” (top left corner). This convolution results in the function values evaluated at the Gauss point “1” of each element (marked green). <span class="math notranslate nohighlight">\(((U_θ^d)_{GP1})_M\)</span> is the matrix of this result. Function values (or their derivatives) evaluated at Gauss points can then be used in any integral evaluation. For example, <span class="math notranslate nohighlight">\(\int u^h dD = |J| \sum_{I\in M} \left[\sum_{i=1}^{4}(w_i (U^d_θ)_{GPi})_M\right]\)</span>, where <span class="math notranslate nohighlight">\(|J|\)</span> is the transformation Jacobian for integration and <span class="math notranslate nohighlight">\(w\)</span> are the quadrature weights.</span><a class="headerlink" href="#int-gauss" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="discretization-elements-and-basis-functions">
+<h2>Discretization: Elements and Basis Functions<a class="headerlink" href="#discretization-elements-and-basis-functions" title="Link to this heading">#</a></h2>
+<p>Most often the domain is defined by a mesh. For simplicity, we’ll assume
+our domain is a uniform grid in 2D, simply an image. The nodes defining
+our domain are the pixels in the image. The elements used in the FEM
+computations will be the area between neighborhoods of adjacent nodes.
+<a class="reference internal" href="#gauss-points"><span class="std std-numref">Fig. 7</span></a> provides a visual of
+constructing a single element. In this example an element can also be
+thought of as the resulting pixel from a 2D convolution operation with a
+kernel size of <span class="math notranslate nohighlight">\((2,2)\)</span> and a stride of <span class="math notranslate nohighlight">\(1\)</span>. The values of each element
+is defined by an interpolation operation between each node in the
+neighborhood. These interpolation functions, also known as basis
+functions, are non-parametric, and are defined <em>a priori</em>. These basis
+functions form the most critical part of the approximation of the
+solution function in the <em>spatial</em> domain. The choice of basis function
+is depenedent on the PDE being solved for. Linear bases are used most
+commonly because of their simpler implementation and interpretations,
+but higher-order bases are often used to obtain better accuracy.</p>
+</section>
+<section id="using-fem-to-compute-spatial-derivatives-of-field-solutions">
+<h2>Using FEM to Compute Spatial Derivatives of Field Solutions<a class="headerlink" href="#using-fem-to-compute-spatial-derivatives-of-field-solutions" title="Link to this heading">#</a></h2>
+<p>Going back to our example of the Poisson Equation, to solve for
+the field solution <span class="math notranslate nohighlight">\(u(x)\)</span>, where <span class="math notranslate nohighlight">\(u(x)\)</span> is a uniform 2D grid, we need to
+compute the spatial derivatives since
+<span class="math notranslate nohighlight">\(\nabla u(\mathbf{x}) = u_{xx} + u_{yy}\)</span>. Computing the spatial
+derivatives of an image using FEM reduces to evaluating each <span class="math notranslate nohighlight">\(2\times2\)</span>
+neighborhood of pixels with the set of basis functions at the desired
+derivative, i.e., to compute <span class="math notranslate nohighlight">\(u_{xx}\)</span> we evaluate the field solution
+with the second derivative of the basis function for every element in
+the domain along the x-direction. One can also view this as a
+convolution operation with a <span class="math notranslate nohighlight">\((2,2)\)</span> kernel and stride <span class="math notranslate nohighlight">\(1\)</span> where we
+define each element in the convolution kernel to be the second
+derivative of the basis function. The same operation is carried out
+again for the 2D case, but with the derivative in the y-direction. Now
+that we have the <span class="math notranslate nohighlight">\(u_{xx}\)</span> and <span class="math notranslate nohighlight">\(y_{yy}\)</span> terms all we need to do is
+evaluate the forcing function, <span class="math notranslate nohighlight">\(f(x)\)</span>, with our basis functions. Note,
+we evaluate the forcing function with the original basis functions, not
+the derivatives of the basis functions.</p>
+</section>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Link to this heading">#</a></h2>
+<p>FEM are fast approximations of the spatial derivatives in a domain
+defined by a mesh. If the mesh is posed as a uniform 2d grid, an image,
+then we can seamlessly integrate FEMs into the loss function of standard
+vision neural networks, such as CNNs and ViT. The ability to use such
+network archictectures alleviates the scaling bottleneck previously
+imposed on data-free Neural PDE Solvers.</p>
+</section>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./content"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="right-next"
+       href="../intro.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Introduction</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Finite Element Inspired Neural PDE Solvers</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-driven-approach">Data-Driven Approach</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-free-approach">Data-Free Approach</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#neural-finite-element-networks">Neural Finite Element Networks</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Neural Finite Element Networks</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#material-properties">Material Properties</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#immersed-object">Immersed Object</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusion">Conclusion</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#finite-element-methods">Finite Element Methods</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#discretization-elements-and-basis-functions">Discretization: Elements and Basis Functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-fem-to-compute-spatial-derivatives-of-field-solutions">Using FEM to Compute Spatial Derivatives of Field Solutions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
+</ul>
+</li>
+</ul>
+
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Ethan Herron, Biswajit Khara, Baskar Ganapathysubramanian, Adarsh Krishnamurthy
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=3ee479438cf8b5e0d341"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=3ee479438cf8b5e0d341"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
